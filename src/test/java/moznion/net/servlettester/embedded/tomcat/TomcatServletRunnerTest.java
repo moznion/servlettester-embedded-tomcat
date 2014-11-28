@@ -18,6 +18,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Tester class for embedded tomcat.
+ * 
+ * @author moznion
+ *
+ */
 public class TomcatServletRunnerTest {
   public static class MyServletClass extends HttpServlet {
     private static final long serialVersionUID = 1L;

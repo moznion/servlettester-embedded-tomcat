@@ -9,6 +9,12 @@ import java.net.URI;
 
 import javax.servlet.Servlet;
 
+/**
+ * Runner class for embedded tomcat.
+ * 
+ * @author moznion
+ *
+ */
 public class TomcatServletRunner implements AutoCloseable {
   private final Tomcat tomcat;
   private final URI baseUri;
