@@ -53,16 +53,26 @@ public class TomcatServletRunner implements AutoCloseable {
     baseUri = new URI("http://127.0.0.1:8080");
   }
 
+  /**
+   * Returns base URL.
+   * 
+   * @return Base URL
+   */
   public URI getBaseUri() {
     return baseUri;
   }
 
-  public void stop() throws LifecycleException {
+  /**
+   * Stop and destroy lauched tomcat.
+   * 
+   * @throws LifecycleException
+   */
+  public void destroy() throws LifecycleException {
     tomcat.stop();
     tomcat.destroy();
   }
 
   public void close() throws Exception {
-    stop();
+    destroy();
   }
 }

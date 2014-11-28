@@ -17,25 +17,46 @@ public class TomcatServletTester {
   }
 
   @FunctionalInterface
-  public interface URIConsumer {
+  public interface UriConsumer {
     void accept(URI body) throws Exception;
   }
 
-  public static void runServlet(String servletClass, URIConsumer body) throws Exception {
+  /**
+   * Run servlet on tomcat with servlet class name and response body.
+   * 
+   * @param servletClass servlet class name
+   * @param body response body
+   * @throws Exception
+   */
+  public static void runServlet(String servletClass, UriConsumer body) throws Exception {
     try (TomcatServletRunner tomcatServletRunner =
         new TomcatServletRunner(servletClass, servletClass)) {
       body.accept(tomcatServletRunner.getBaseUri());
     }
   }
 
-  public static void runServlet(Servlet servlet, URIConsumer body) throws Exception {
+  /**
+   * Run servlet on tomcat with servlet instance and response body.
+   * 
+   * @param servlet servlet instance
+   * @param body response body
+   * @throws Exception
+   */
+  public static void runServlet(Servlet servlet, UriConsumer body) throws Exception {
     try (TomcatServletRunner tomcatServletRunner =
         new TomcatServletRunner(servlet, servlet.getClass().toString())) {
       body.accept(tomcatServletRunner.getBaseUri());
     }
   }
 
-  public static void runServlet(ServletCallback callback, URIConsumer body) throws Exception {
+  /**
+   * Run servlet on tomcat with servlet callback and response body.
+   * 
+   * @param callback servlet callback
+   * @param body response body
+   * @throws Exception
+   */
+  public static void runServlet(ServletCallback callback, UriConsumer body) throws Exception {
     Servlet servlet = new HttpServlet() {
       private static final long serialVersionUID = 1L;
 

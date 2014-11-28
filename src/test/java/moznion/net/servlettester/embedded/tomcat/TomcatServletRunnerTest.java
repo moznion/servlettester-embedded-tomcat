@@ -45,9 +45,9 @@ public class TomcatServletRunnerTest {
   }
 
   private void checkResponce(TomcatServletRunner runner) throws Exception {
-    URI baseURI = runner.getBaseUri();
+    URI baseUri = runner.getBaseUri();
     try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-      HttpGet request = new HttpGet(baseURI);
+      HttpGet request = new HttpGet(baseUri);
       try (CloseableHttpResponse resp = client.execute(request)) {
         String body = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
         assertEquals("Hey", body);
