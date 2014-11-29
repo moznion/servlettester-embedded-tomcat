@@ -1,7 +1,83 @@
 servlettester-embedded-tomcat [![Build Status](https://travis-ci.org/moznion/servlettester-embedded-tomcat.svg)](https://travis-ci.org/moznion/servlettester-embedded-tomcat)
 ==
 
-TBD
+HTTP servlet runner and tester with embedded tomcat. It uses Java8's lambda.
+
+Testing code sample
+--
+
+### with callback
+
+```java
+TomcatServletTester.runServlet((req, resp) -> {
+    resp.getWriter().print("Hey");
+}, (uri) -> {
+    try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+        HttpGet request = new HttpGet(uri);
+        try (CloseableHttpResponse resp = client.execute(request)) {
+            String body = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
+            assertEquals("Hey", body);
+        }
+    }
+});
+```
+
+### with servlet
+
+```java
+public static class MyServletClass extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
+      resp.getWriter().print("Hey");
+    }
+}
+
+TomcatServletTester.runServlet(new MyServletClass(), (uri) -> {
+    // your testing code
+});
+```
+
+### with servlet class name
+
+```java
+TomcatServletTester.runServlet(MyServletClass.class.getName(), (uri) -> {
+    // your testing code
+});
+```
+
+Tomcat resource is [AutoCloseable](https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html),
+it means it will be released automatically when finish `runServlet` method.
+
+Sample code to start embedded Tomcat
+--
+
+### with servlet
+
+```java
+try (TomcatServletRunner runner = new TomcatServletRunner(new MyServletClass(), "MyServlet")) {
+    // your code
+}
+```
+
+### with servlet class name
+
+```java
+try (TomcatServletRunner runner = new TomcatServletRunner(MyServletClass.class.getName(), "MyServlet")) {
+    // your code
+}
+```
+
+TomcatServletRunner implements [AutoCloseable](https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html),
+so its resource will be released when it is finished try-with-resources block.
+
+### When you want to release the launched tomcat resource
+
+```java
+runner.destroy();
+```
 
 See Also
 --
