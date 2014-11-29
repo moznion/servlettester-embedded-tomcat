@@ -57,7 +57,7 @@ Sample code to start embedded Tomcat
 ### with servlet
 
 ```java
-try (TomcatServletRunner runner = new TomcatServletRunner(new MyServletClass(), "MyServlet")) {
+try (TomcatServletRunner runner = new TomcatServletRunner(new MyServletClass())) {
     // your code
 }
 ```
@@ -65,7 +65,7 @@ try (TomcatServletRunner runner = new TomcatServletRunner(new MyServletClass(), 
 ### with servlet class name
 
 ```java
-try (TomcatServletRunner runner = new TomcatServletRunner(MyServletClass.class.getName(), "MyServlet")) {
+try (TomcatServletRunner runner = new TomcatServletRunner(MyServletClass.class.getName())) {
     // your code
 }
 ```
