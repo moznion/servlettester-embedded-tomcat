@@ -28,7 +28,9 @@ public class TomcatServletRunner implements AutoCloseable {
    */
   public TomcatServletRunner(String servletClass, String servletName) throws Exception {
     tomcat = new Tomcat();
-    tomcat.setPort(8080);
+
+    int port = TcpPortScanner.getEmptyPort();
+    tomcat.setPort(port);
 
     File projectRoot = new File(".");
     Context ctx = tomcat.addContext("/", projectRoot.getAbsolutePath());
@@ -36,7 +38,8 @@ public class TomcatServletRunner implements AutoCloseable {
     ctx.addServletMapping("/*", servletName);
     tomcat.start();
 
-    baseUri = new URI("http://127.0.0.1:8080");
+    StringBuilder builder = new StringBuilder();
+    baseUri = new URI(builder.append("http://127.0.0.1:").append(port).toString());
   }
 
   /**
@@ -48,7 +51,9 @@ public class TomcatServletRunner implements AutoCloseable {
    */
   public TomcatServletRunner(Servlet servlet, String servletName) throws Exception {
     tomcat = new Tomcat();
-    tomcat.setPort(8080);
+
+    int port = TcpPortScanner.getEmptyPort();
+    tomcat.setPort(port);
 
     File projectRoot = new File(".");
     Context ctx = tomcat.addContext("/", projectRoot.getAbsolutePath());
@@ -56,7 +61,8 @@ public class TomcatServletRunner implements AutoCloseable {
     ctx.addServletMapping("/*", servletName);
     tomcat.start();
 
-    baseUri = new URI("http://127.0.0.1:8080");
+    StringBuilder builder = new StringBuilder();
+    baseUri = new URI(builder.append("http://127.0.0.1:").append(port).toString());
   }
 
   /**
