@@ -46,8 +46,42 @@ public class TomcatServletTesterTest {
   }
 
   @Test
+  public void shouldBeEnableToTestWithServletClassNameAndPort() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    TomcatServletTester.runServlet(MyServletClass.class.getName(), body, port);
+  }
+
+  @Test
+  public void shouldBeEnableToTestWithServletClassNameAndServletName() throws Exception {
+    TomcatServletTester.runServlet(MyServletClass.class.getName(), body, "__MyServlet__");
+  }
+
+  @Test
+  public void shouldBeEnableToTestWithServletClassNameAndPortAndServletName() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    TomcatServletTester.runServlet(MyServletClass.class.getName(), body, "__MyServlet__", port);
+  }
+
+  @Test
   public void shouldBeEnableToTestWithServlet() throws Exception {
     TomcatServletTester.runServlet(new MyServletClass(), body);
+  }
+
+  @Test
+  public void shouldBeEnableToTestWithServletAndPort() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    TomcatServletTester.runServlet(new MyServletClass(), body, port);
+  }
+
+  @Test
+  public void shouldBeEnableToTestWithServletAndServletName() throws Exception {
+    TomcatServletTester.runServlet(new MyServletClass(), body, "__MyServlet__");
+  }
+
+  @Test
+  public void shouldBeEnableToTestWithServletAndPortAndServletName() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    TomcatServletTester.runServlet(new MyServletClass(), body, "__MyServlet__", port);
   }
 
   @Test
@@ -55,5 +89,28 @@ public class TomcatServletTesterTest {
     TomcatServletTester.runServlet((req, resp) -> {
       resp.getWriter().print("Hey");
     }, body);
+  }
+
+  @Test
+  public void shouldBeEnableToTestWithServletCallbackAndPort() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    TomcatServletTester.runServlet((req, resp) -> {
+      resp.getWriter().print("Hey");
+    }, body, port);
+  }
+
+  @Test
+  public void shouldBeEnableToTestWithServletCallbackAndServletName() throws Exception {
+    TomcatServletTester.runServlet((req, resp) -> {
+      resp.getWriter().print("Hey");
+    }, body, "__MyServlet__");
+  }
+
+  @Test
+  public void shouldBeEnableToTestWithServletCallbackAndPortAndServletName() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    TomcatServletTester.runServlet((req, resp) -> {
+      resp.getWriter().print("Hey");
+    }, body, "__MyServlet__", port);
   }
 }

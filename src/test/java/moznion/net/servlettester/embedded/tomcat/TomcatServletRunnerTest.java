@@ -37,16 +37,80 @@ public class TomcatServletRunnerTest {
 
   @Test
   public void tomcatShouldBeRunningWithServletInstance() throws Exception {
-    try (TomcatServletRunner runner = new TomcatServletRunner(new MyServletClass(), "MyServlet")) {
+    try (TomcatServletRunner runner = new TomcatServletRunner(new MyServletClass())) {
       checkResponce(runner);
+      assertEquals(MyServletClass.class.getName(), runner.getServletName());
+    }
+  }
+
+  @Test
+  public void tomcatShouldBeRunningWithServletInstanceAndServletName() throws Exception {
+    String servletName = "__MyServlet__";
+    try (TomcatServletRunner runner = new TomcatServletRunner(new MyServletClass(), servletName)) {
+      checkResponce(runner);
+      assertEquals(servletName, runner.getServletName());
+    }
+  }
+
+  @Test
+  public void tomcatShouldBeRunningWithServletInstanceAndPort() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    try (TomcatServletRunner runner = new TomcatServletRunner(new MyServletClass(), port)) {
+      checkResponce(runner);
+      assertEquals("http://127.0.0.1:" + port, runner.getBaseUri().toString());
+      assertEquals(MyServletClass.class.getName(), runner.getServletName());
+    }
+  }
+
+  @Test
+  public void tomcatShouldBeRunningWithServletInstanceAndServletNameAndPort() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    String servletName = "__MyServlet__";
+    try (TomcatServletRunner runner =
+        new TomcatServletRunner(new MyServletClass(), servletName, port)) {
+      checkResponce(runner);
+      assertEquals("http://127.0.0.1:" + port, runner.getBaseUri().toString());
+      assertEquals(servletName, runner.getServletName());
     }
   }
 
   @Test
   public void tomcatShouldBeRunningWithServletClassName() throws Exception {
-    try (TomcatServletRunner runner =
-        new TomcatServletRunner(MyServletClass.class.getName(), "MyServlet")) {
+    try (TomcatServletRunner runner = new TomcatServletRunner(MyServletClass.class.getName())) {
       checkResponce(runner);
+      assertEquals(MyServletClass.class.getName(), runner.getServletName());
+    }
+  }
+
+  @Test
+  public void tomcatShouldBeRunningWithServletClassNameAndServletName() throws Exception {
+    String servletName = "__MyServlet__";
+    try (TomcatServletRunner runner =
+        new TomcatServletRunner(MyServletClass.class.getName(), servletName)) {
+      checkResponce(runner);
+      assertEquals(servletName, runner.getServletName());
+    }
+  }
+
+  @Test
+  public void tomcatShouldBeRunningWithServletClassNameAndPort() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    try (TomcatServletRunner runner = new TomcatServletRunner(MyServletClass.class.getName(), port)) {
+      checkResponce(runner);
+      assertEquals("http://127.0.0.1:" + port, runner.getBaseUri().toString());
+      assertEquals(MyServletClass.class.getName(), runner.getServletName());
+    }
+  }
+
+  @Test
+  public void tomcatShouldBeRunningWithServletClassNameAndServletNameAndPort() throws Exception {
+    int port = TcpPortScanner.getEmptyPort();
+    String servletName = "__MyServlet__";
+    try (TomcatServletRunner runner =
+        new TomcatServletRunner(MyServletClass.class.getName(), servletName, port)) {
+      checkResponce(runner);
+      assertEquals("http://127.0.0.1:" + port, runner.getBaseUri().toString());
+      assertEquals(servletName, runner.getServletName());
     }
   }
 
