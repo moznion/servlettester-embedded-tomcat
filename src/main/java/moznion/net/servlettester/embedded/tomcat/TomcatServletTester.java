@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * Tester for servlet on embedded tomcat
+ * 
  * @author moznion
  *
  */

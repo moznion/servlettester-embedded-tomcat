@@ -15,10 +15,6 @@ import javax.servlet.Servlet;
  * @author moznion
  *
  */
-/**
- * @author moznion
- *
- */
 public class TomcatServletRunner implements AutoCloseable {
   private final Tomcat tomcat;
   private final URI baseUri;
@@ -176,7 +172,7 @@ public class TomcatServletRunner implements AutoCloseable {
   public URI getBaseUri() {
     return baseUri;
   }
-  
+
   /**
    * Returns servlet name.
    * 
