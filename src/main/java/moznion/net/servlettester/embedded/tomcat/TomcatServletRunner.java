@@ -8,6 +8,7 @@ import java.io.File;
 import java.net.URI;
 
 import javax.servlet.Servlet;
+import java.util.Optional;
 
 /**
  * Runner class for embedded tomcat.
@@ -69,27 +70,7 @@ public class TomcatServletRunner implements AutoCloseable {
    */
   public TomcatServletRunner(String servletClassName, String servletName, Integer port)
       throws Exception {
-    if (port == null) {
-      port = TcpPortScanner.getEmptyPort();
-    }
-
-    if (servletName == null) {
-      servletName = servletClassName;
-    }
-    this.servletName = servletName;
-
-    tomcat = new Tomcat();
-    tomcat.setPort(port);
-
-    File projectRoot = new File(".");
-    Context ctx = tomcat.addContext("/", projectRoot.getAbsolutePath());
-    Tomcat.addServlet(ctx, this.servletName, servletClassName);
-    ctx.addServletMapping("/*", this.servletName);
-
-    tomcat.start();
-
-    StringBuilder builder = new StringBuilder();
-    baseUri = new URI(builder.append("http://127.0.0.1:").append(port).toString());
+    this(of(servletClassName, servletName, port));
   }
 
   /**
@@ -140,29 +121,57 @@ public class TomcatServletRunner implements AutoCloseable {
    * @throws Exception
    */
   public TomcatServletRunner(Servlet servlet, String servletName, Integer port) throws Exception {
-    if (port == null) {
-      port = TcpPortScanner.getEmptyPort();
-    }
-
-    if (servletName == null) {
-      servletName = servlet.getClass().getName();
-    }
-    this.servletName = servletName;
-
-    tomcat = new Tomcat();
-    tomcat.setPort(port);
-
-    File projectRoot = new File(".");
-    Context ctx = tomcat.addContext("/", projectRoot.getAbsolutePath());
-    Tomcat.addServlet(ctx, this.servletName, servlet);
-    ctx.addServletMapping("/*", this.servletName);
-
-    tomcat.start();
-
-    StringBuilder builder = new StringBuilder();
-    baseUri = new URI(builder.append("http://127.0.0.1:").append(port).toString());
+    this(of(servlet, servletName, port));
   }
 
+  private TomcatServletRunner(Tomcat tomcat, URI baseUri, String servletName) {
+    this.tomcat = tomcat;
+    this.baseUri = baseUri;
+    this.servletName = servletName;
+  }
+
+  private TomcatServletRunner(TomcatServletRunner runner) {
+    this(runner.tomcat, runner.baseUri, runner.servletName);
+  }
+
+  private static TomcatServletRunner of(Servlet servlet, String inputServletName, Integer inputPort) throws Exception {
+    String servletClassName = servlet.getClass().getName();
+    String servletName = Optional.ofNullable(inputServletName).orElse(servletClassName);
+    int port = Optional.ofNullable(inputPort).orElse(TcpPortScanner.getEmptyPort());
+    URI uri = new URI("http://127.0.0.1:" + port);
+    return new TomcatServletRunner(prepared(servlet, servletName, port), uri, servletName);
+  }
+
+  private static TomcatServletRunner of(String servletClassName, String inputServletName, Integer inputPort) throws Exception {
+    String servletName = Optional.ofNullable(inputServletName).orElse(servletClassName);
+    int port = Optional.ofNullable(inputPort).orElse(TcpPortScanner.getEmptyPort());
+    URI uri = new URI("http://127.0.0.1:" + port);
+    return new TomcatServletRunner(prepared(servletClassName, servletName, port), uri, servletName);
+  }
+
+  private static Tomcat prepared(Servlet servlet, String servletName, int port) throws LifecycleException {
+    Tomcat tomcat = new Tomcat();
+    tomcat.setPort(port);
+    File projectRoot = new File(".");
+    Context ctx = tomcat.addContext("/", projectRoot.getAbsolutePath());
+    Tomcat.addServlet(ctx, servletName, servlet);
+    ctx.addServletMapping("/*", servletName);
+
+    tomcat.start();
+    return tomcat;
+  }
+
+  private static Tomcat prepared(String servletClassName, String servletName, int port) throws LifecycleException {
+    Tomcat tomcat = new Tomcat();
+    tomcat.setPort(port);
+    File projectRoot = new File(".");
+    Context ctx = tomcat.addContext("/", projectRoot.getAbsolutePath());
+    Tomcat.addServlet(ctx, servletName, servletClassName);
+    ctx.addServletMapping("/*", servletName);
+
+    tomcat.start();
+    return tomcat;
+  }
 
   /**
    * Returns base URL.
